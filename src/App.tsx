@@ -13,7 +13,7 @@ function App() {
             Get started
           </Button>
           <Button variant="ghost">
-            Learn more
+            Learn how
           </Button>
         </div>
       </header>
