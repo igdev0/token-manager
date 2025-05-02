@@ -1,10 +1,9 @@
-import {Button} from '@/components/ui/button.tsx';
-import {Wallet} from 'lucide-react';
+import Navbar from '@/components/ui/navbar.tsx';
 
 function App() {
   return (
     <div className="container mx-auto">
-      <Button variant="default">Connect <Wallet/></Button>
+      <Navbar/>
     </div>
   )
 }
