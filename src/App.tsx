@@ -1,7 +1,7 @@
 "use client";
 import {Route, Routes} from 'react-router';
 import Landing from '@/screens/landing.tsx';
-import {use, useEffect} from 'react';
+import {useEffect} from 'react';
 import {useWalletStore} from '@/store/wallet.ts';
 import useAppStore from '@/store/app.ts';
 
