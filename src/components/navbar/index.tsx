@@ -6,7 +6,7 @@ import {useWalletStore} from '@/store/wallet.ts';
 export default function Navbar() {
   const authenticated = useWalletStore().authenticated;
   return (
-      <div className="navbar">
+      <div className="navbar px-2">
         <div className="container mx-auto flex justify-between py-2">
           <div className="inline-flex justify-between gap-2 items-center">
             <img src={logo} alt="icon"/>
