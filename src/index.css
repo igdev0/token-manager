@@ -44,13 +44,13 @@
 :root {
     font-size: 20px;
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
-    --card: oklch(1 0 0);
+    --background: var(--color-white);
+    --foreground: var(--color-gray-950);
+    --card: var(--color-white);
     --card-foreground: oklch(0.141 0.005 285.823);
-    --popover: oklch(1 0 0);
+    --popover: var(--color-white);
     --popover-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.21 0.006 285.885);
+    --primary: var(--color-zinc-900);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.967 0.001 286.375);
     --secondary-foreground: oklch(0.21 0.006 285.885);
