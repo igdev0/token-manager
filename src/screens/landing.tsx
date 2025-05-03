@@ -1,4 +1,4 @@
-import Navbar from '@/components/ui/navbar.tsx';
+import Navbar from '@/components/navbar';
 import {Button} from '@/components/ui/button.tsx';
 
 export default function Landing() {

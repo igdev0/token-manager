@@ -1,6 +1,5 @@
 import logo from "../../assets/logo.svg";
-import {Button} from '@/components/ui/button.tsx';
-import {Wallet} from 'lucide-react';
+import WalletSelector from '@/components/wallet-selector';
 
 export default function Navbar() {
   return (
@@ -10,7 +9,7 @@ export default function Navbar() {
             <img src={logo} alt="icon"/>
             Guardo
           </div>
-          <Button variant="default">Connect <Wallet/></Button>
+          <WalletSelector/>
         </div>
       </div>
   );

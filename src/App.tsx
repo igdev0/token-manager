@@ -4,6 +4,7 @@ import Landing from '@/screens/landing.tsx';
 import {useEffect} from 'react';
 import {useWalletStore} from '@/store/wallet.ts';
 import useAppStore from '@/store/app.ts';
+import {Toaster} from '@/components/ui/sonner.tsx';
 
 
 function App() {
@@ -11,21 +12,24 @@ function App() {
   const app = useAppStore();
 
   useEffect(() => {
-    app.setLoading(wallet.initialized)
-  }, [wallet.initialized])
+    app.setLoading(wallet.initialized);
+  }, [wallet.initialized]);
 
   useEffect(() => {
     wallet.init().catch();
     return () => {
-      wallet.cleanup()
-    }
+      wallet.cleanup();
+    };
   }, []);
 
   return (
-      <Routes>
-        <Route path="/" element={<Landing/>}/>
-      </Routes>
-  )
+      <>
+        <Toaster/>
+        <Routes>
+          <Route path="/" element={<Landing/>}/>
+        </Routes>
+      </>
+  );
 }
 
-export default App
+export default App;
