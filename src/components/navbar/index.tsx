@@ -1,7 +1,10 @@
 import logo from "../../assets/logo.svg";
 import WalletSelector from '@/components/wallet-selector';
+import {Link} from 'react-router';
+import {useWalletStore} from '@/store/wallet.ts';
 
 export default function Navbar() {
+  const authenticated = useWalletStore().authenticated;
   return (
       <div className="navbar">
         <div className="container mx-auto flex justify-between py-2">
@@ -9,7 +12,10 @@ export default function Navbar() {
             <img src={logo} alt="icon"/>
             Guardo
           </div>
-          <WalletSelector/>
+          <div className="flex gap-2 items-center">
+            {authenticated && <Link to="/dashboard" className="px-3">Dashboard</Link>}
+            <WalletSelector/>
+          </div>
         </div>
       </div>
   );

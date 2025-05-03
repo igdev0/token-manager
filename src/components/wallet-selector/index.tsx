@@ -12,15 +12,17 @@ import {useState} from 'react';
 import {useWalletStore} from '@/store/wallet.ts';
 import {toast} from 'sonner';
 import {truncateAddress} from '@/utils/functions.ts';
+import {useNavigate} from 'react-router';
 
 export default function WalletSelector() {
   const walletStore = useWalletStore();
   const [modalOpen, set] = useState(false);
-
+  const navigate = useNavigate();
   const onProviderClick = (key: string) => {
     return () => {
       walletStore.authenticate(key).then(() => {
         set(false);
+        navigate("/dashboard");
       }).catch(err => {
         console.error(err);
         toast("Error while attempting to authenticate", {
