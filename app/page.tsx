@@ -3,6 +3,7 @@ import Navbar from '@/components/navbar';
 import {Button} from '@/components/ui/button';
 import {useWalletStore} from '@/store/wallet';
 import {useEffect} from 'react';
+import Background from '@/components/background';
 
 export default function Home() {
   const wallet = useWalletStore();
@@ -21,6 +22,7 @@ export default function Home() {
   }
   return (
       <div className="px-2">
+        <Background/>
         <Navbar/>
         <header className="mt-70">
           <h1 className="text-6xl font-bold text-center mb-2">The token manager</h1>
