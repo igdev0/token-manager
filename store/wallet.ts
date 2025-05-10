@@ -1,5 +1,5 @@
 import {create} from 'zustand/react';
-import {EIP1193Provider, EIP6963AnnounceProviderEvent, EIP6963ProviderInfo} from '../utils/types';
+import {EIP1193Provider, EIP6963AnnounceProviderEvent, EIP6963ProviderInfo} from '@/utils/types';
 
 export interface WalletStore {
   accounts: string[],

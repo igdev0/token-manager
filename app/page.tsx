@@ -1,7 +1,24 @@
+"use client";
 import Navbar from '@/components/navbar';
-import {Button} from '@/components/ui/button.tsx';
+import {Button} from '@/components/ui/button';
+import {useWalletStore} from '@/store/wallet';
+import {useEffect} from 'react';
 
-export default function Landing() {
+export default function Home() {
+  const wallet = useWalletStore();
+
+  useEffect(() => {
+    wallet.init().catch();
+    return () => {
+      wallet.cleanup();
+    };
+  }, []);
+
+  if (!wallet.initialized) {
+    return (
+        <h1>Loading ...</h1>
+    );
+  }
   return (
       <div className="px-2">
         <Navbar/>
@@ -19,5 +36,5 @@ export default function Landing() {
           </div>
         </header>
       </div>
-  )
+  );
 }

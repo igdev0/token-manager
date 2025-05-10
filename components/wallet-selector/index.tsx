@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -5,24 +6,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog.tsx';
-import {Button} from '@/components/ui/button.tsx';
+} from '@/components/ui/dialog';
+import {Button} from '@/components/ui/button';
 import {LogOut, TriangleAlertIcon, Wallet} from 'lucide-react';
 import {useState} from 'react';
-import {useWalletStore} from '@/store/wallet.ts';
+import {useWalletStore} from '@/store/wallet';
 import {toast} from 'sonner';
-import {truncateAddress} from '@/utils/functions.ts';
-import {useNavigate} from 'react-router';
+import {truncateAddress} from '@/utils/functions';
+import {useRouter} from 'next/navigation';
 
 export default function WalletSelector() {
   const walletStore = useWalletStore();
   const [modalOpen, set] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const onProviderClick = (key: string) => {
     return () => {
       walletStore.authenticate(key).then(() => {
         set(false);
-        navigate("/dashboard");
+        navigate.push("/dashboard");
       }).catch(err => {
         console.error(err);
         toast("Error while attempting to authenticate", {
