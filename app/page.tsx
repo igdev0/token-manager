@@ -23,9 +23,8 @@ export default function Home() {
       <div className="px-2">
         <Navbar/>
         <header className="mt-70">
-          <h1 className="text-6xl font-bold text-center mb-2">The wallet guardian</h1>
-          <h1 className="text-2xl font-bold text-center max-w-[600px] mx-auto text-balance mb-4">A tool that allows you
-            to predict contract call outcome.</h1>
+          <h1 className="text-6xl font-bold text-center mb-2">The token manager</h1>
+          <h1 className="text-2xl font-bold text-center max-w-[600px] mx-auto text-balance mb-4">That allows you to easly manage fungible and non-fungible tokens.</h1>
           <div className="max-w-[600px] mx-auto flex justify-center gap-2">
             <Button>
               Get started

@@ -8,9 +8,9 @@ export default function Navbar() {
   return (
       <div className="navbar px-2">
         <div className="container mx-auto flex justify-between py-2">
-          <div className="inline-flex justify-between gap-2 items-center">
-            <img src="/logo.svg" alt="icon"/>
-            Guardo
+          <div className="inline-flex justify-between gap-1 items-center">
+            <img src="six.svg" alt="icon" width={40} height={40}/>
+            <strong>Token manager</strong>
           </div>
           <div className="flex gap-2 items-center">
             {authenticated && <Link href="/dashboard" className="px-3">Dashboard</Link>}
