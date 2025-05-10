@@ -38,7 +38,7 @@ export default function Background() {
       ctx.fillStyle = '#000';
       ctx.filter =  `blur(200px)`
       ctx.fill();
-    
+
       requestAnimationFrame(render);
     };
 
