@@ -3,7 +3,6 @@ import Navbar from '@/components/navbar';
 import {Button} from '@/components/ui/button';
 import {useWalletStore} from '@/store/wallet';
 import {useEffect} from 'react';
-import Background from '@/components/background';
 
 export default function Home() {
   const wallet = useWalletStore();
