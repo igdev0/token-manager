@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@layer components {
+    .tabs {
+        @apply flex gap-2;
+    }
+}

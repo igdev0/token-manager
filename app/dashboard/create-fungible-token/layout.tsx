@@ -3,7 +3,7 @@ import {ReactNode} from 'react';
 import "./style.css";
 
 export const metadata: Metadata = {
-  title: "Token manager / Dashboard",
+  title: "Token manager / Dashboard / Create fungible token",
   description: "A token manager that allows you to manage your fungible and non-fungible tokens.",
 };
 
