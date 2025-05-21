@@ -6,7 +6,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract ERC20Token is ERC20, Ownable {
     uint8 private _decimals;
-    constructor(uint256 initialSupply, string memory  _name, string memory _symbol, uint8 _dec) ERC20(_name, _symbol) Ownable(msg.sender) {
+    constructor(string memory  _name, string memory _symbol, uint256 initialSupply,  uint8 _dec) ERC20(_name, _symbol) Ownable(msg.sender) {
         _mint(msg.sender, initialSupply);
         _decimals = _dec;
     }
