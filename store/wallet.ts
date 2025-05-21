@@ -1,3 +1,4 @@
+"use client";
 import {create, useStore} from 'zustand/react';
 import {EIP1193Provider, EIP6963AnnounceProviderEvent, EIP6963ProviderInfo} from '@/utils/types';
 import {useEffect} from 'react';

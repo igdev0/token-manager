@@ -1,6 +1,8 @@
 import type {Metadata} from "next";
 import {ReactNode} from 'react';
 import "./style.css";
+import {Button} from '@/components/ui/button';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "Token manager / Dashboard",
@@ -13,8 +15,19 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-      <>
-        {children}
-      </>
+      <div className="w-full h-full">
+        <div className="container mx-auto flex flex-col gap-4 py-2">
+          <div className="tabs">
+            <Button asChild={true}>
+              <Link href="/dashboard/create-fungible-token">
+                New Fungible
+              </Link>
+            </Button>
+            <Button variant="secondary">
+              New Non-fungible</Button>
+          </div>
+          {children}
+        </div>
+      </div>
   );
 }
