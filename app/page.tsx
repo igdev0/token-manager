@@ -2,17 +2,10 @@
 import Navbar from '@/components/navbar';
 import {Button} from '@/components/ui/button';
 import {useWalletStore} from '@/store/wallet';
-import {useEffect} from 'react';
 
 export default function Home() {
   const wallet = useWalletStore();
 
-  useEffect(() => {
-    wallet.init().catch();
-    return () => {
-      wallet.cleanup();
-    };
-  }, []);
 
   if (!wallet.initialized) {
     return (

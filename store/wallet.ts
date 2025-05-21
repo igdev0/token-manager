@@ -1,5 +1,6 @@
-import {create} from 'zustand/react';
+import {create, useStore} from 'zustand/react';
 import {EIP1193Provider, EIP6963AnnounceProviderEvent, EIP6963ProviderInfo} from '@/utils/types';
+import {useEffect} from 'react';
 
 export interface WalletStore {
   accounts: string[],
@@ -41,7 +42,7 @@ export interface PermissionResponseCaveats {
 
 export const STORAGE_KEY = "wallet_provider";
 
-export const useWalletStore = create<WalletStore>((setState, getState) => ({
+export const walletStore = create<WalletStore>((setState, getState) => ({
   accounts: [],
   initialized: false,
   authenticated: false,
@@ -154,3 +155,19 @@ export const useWalletStore = create<WalletStore>((setState, getState) => ({
     });
   },
 }));
+
+export function useWalletStore() {
+  const store =  useStore(walletStore);
+
+  useEffect(() => {
+    if(!store.initialized) {
+      store.init().catch(console.error);
+    }
+    return () => {
+      store.cleanup();
+    };
+  }, []);
+
+  return store;
+
+}
