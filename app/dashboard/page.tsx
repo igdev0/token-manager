@@ -6,7 +6,6 @@ export default function Dashboard() {
       <div className="w-full h-full">
         <div className="container mx-auto flex flex-col gap-4 py-2">
           <div className="tabs">
-
             <Button asChild={true}>
               <Link href="/dashboard/create-fungible-token">
                 New Fungible
