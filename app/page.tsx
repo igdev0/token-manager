@@ -21,7 +21,6 @@ export default function Home() {
   }
   return (
       <div className="px-2">
-        {/*<Background/>*/}
         <Navbar/>
         <header className="mt-70">
           <h1 className="text-6xl font-bold text-center mb-2">The token manager</h1>
