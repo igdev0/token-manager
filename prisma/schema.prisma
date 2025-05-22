@@ -21,3 +21,16 @@ model Contact {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt()
 }
+
+model Tokens {
+  id         String    @id @default(uuid())
+  address    String
+  type       TokenKind
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt()
+}
+
+enum TokenKind {
+  Fungible
+  NonFungible
+}
