@@ -27,6 +27,7 @@ model Token {
   name         String
   symbol       String
   address      String
+  owner        String
   type         TokenKind
   chain_id     String
   network_name String
