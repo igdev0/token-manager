@@ -9,15 +9,17 @@ export default async function Dashboard() {
         <thead className="bg-gray-50">
          <tr>
            <th className="text-left p-2">Name</th>
+           <th className="text-left p-2">Kind</th>
            <th className="text-left p-2">Address</th>
            <th className="text-left p-2">Network</th>
          </tr>
         </thead>
         <tbody>
         {
-          tokens.map(({id, name, symbol, address, network_name}) => (
+          tokens.map(({id, name, symbol, address, network_name, type}) => (
               <tr key={id}>
                 <td className="p-2">{name} ({symbol})</td>
+                <td className="p-2">{type}</td>
                 <td className="p-2">{address}</td>
                 <td className="p-2">{network_name}</td>
                 <td className="p-2"><Button><Pen/></Button></td>
