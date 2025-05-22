@@ -1,9 +1,30 @@
-"use client";
+import {getTokens} from '@/app/dashboard/actions';
+import {Button} from '@/components/ui/button';
+import {Pen} from 'lucide-react';
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const tokens = await getTokens();
   return (
-      <div>
-        <h1> Tokens ..</h1>
-      </div>
+      <table>
+        <thead className="bg-gray-50">
+         <tr>
+           <th className="text-left p-2">Name</th>
+           <th className="text-left p-2">Address</th>
+           <th className="text-left p-2">Network</th>
+         </tr>
+        </thead>
+        <tbody>
+        {
+          tokens.map(({id, name, symbol, address, network_name}) => (
+              <tr key={id}>
+                <td className="p-2">{name} ({symbol})</td>
+                <td className="p-2">{address}</td>
+                <td className="p-2">{network_name}</td>
+                <td className="p-2"><Button><Pen/></Button></td>
+              </tr>
+          ))
+        }
+        </tbody>
+      </table>
   );
 }
