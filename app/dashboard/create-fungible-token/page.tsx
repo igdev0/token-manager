@@ -41,7 +41,9 @@ export default function CreateFungibleTokenPage() {
       const deploy = await factory.deploy(values.name, values.symbol, values.initialSupply, values.decimals);
       const token = await deploy.waitForDeployment();
       const tokenAddress = await token.getAddress();
-      await storeToken(values.name, values.symbol, tokenAddress, "Fungible");
+      const network = await browserProvider.getNetwork();
+      await storeToken(values.name, values.symbol, tokenAddress, "Fungible", network.name, network.chainId.toString());
+      form.reset();
     }
   };
 

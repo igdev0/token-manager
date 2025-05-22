@@ -23,13 +23,15 @@ model Contact {
 }
 
 model Token {
-  id         String    @id @default(uuid())
-  name       String
-  symbol     String
-  address    String
-  type       TokenKind
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt()
+  id           String    @id @default(uuid())
+  name         String
+  symbol       String
+  address      String
+  type         TokenKind
+  chain_id     String
+  network_name String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt()
 }
 
 enum TokenKind {
