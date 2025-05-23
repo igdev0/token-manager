@@ -57,7 +57,7 @@ export default function CreateFungibleTokenPage() {
       const network = await browserProvider.getNetwork();
 
       try {
-        await storeToken(values.name, values.symbol, tokenAddress, "Fungible", network.name, network.chainId.toString());
+        await storeToken(values.name, values.symbol, tokenAddress, "Fungible", network.name, network.chainId.toString(), signer.address);
         form.reset();
         toast("A token was created successfully!", {
           position: "top-right",
