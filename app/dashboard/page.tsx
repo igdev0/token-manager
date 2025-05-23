@@ -2,7 +2,7 @@
 import {Button} from '@/components/ui/button';
 import {Pen} from 'lucide-react';
 import {useEffect, useState} from 'react';
-import {getTokens} from '@/app/dashboard/actions';
+import {getTokens, getTotalTokens} from '@/app/dashboard/actions';
 import {$Enums} from '@/lib/generated/prisma';
 import Link from 'next/link';
 import {useSearchParams} from 'next/navigation';
@@ -31,11 +31,16 @@ const MAX_PAGERS = 10;
 export default function Dashboard() {
   const [data, setData] = useState<Token[] | null>(null);
   const params = useSearchParams();
-  const page = Number(params.get("page") ?? 0);
+  const page = Number(params.get("page") ?? 1);
   const perPage = Number(params.get("perPage") ?? 10);
-
+  const [totalPages, setTotalPages] = useState(0);
   useEffect(() => {
-    getTokens(page, perPage).then(setData).catch(console.error);
+    if (page > 0) {
+      getTotalTokens().then(v => setTotalPages(Math.ceil(v / perPage))).catch(console.error);
+      getTokens(page, perPage).then(setData).catch(console.error);
+    } else {
+      setData([]);
+    }
   }, [page, perPage]);
 
   if (!data) {
@@ -91,18 +96,19 @@ export default function Dashboard() {
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href={`?page=${page - 1 == 0 ? 1 : page -1}&perPage=${perPage}`}/>
+                <PaginationPrevious className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""} href={page - 1 === 0 ? '#' : `?page=${page - 1}`}/>
               </PaginationItem>
               {
-                Array.from({length: MAX_PAGERS}).map((_, i) => (
+                Array.from({length: totalPages}).map((_, i) => (
 
                     <PaginationItem>
-                      <PaginationLink isActive={i+1 === page} href={`?page=${i + 1}&perPage=${perPage}`}>{i+1}</PaginationLink>
+                      <PaginationLink isActive={i + 1 === page}
+                                      href={`?page=${i + 1}`}>{i + 1}</PaginationLink>
                     </PaginationItem>
                 ))
               }
               <PaginationItem>
-                <PaginationNext href={`?page=${page + 1 > data.length ? data.length : page + 1}&perPage=${perPage}`}/>
+                <PaginationNext className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""} href={page + 1 > data.length ? '#' : `?page=${page + 1}`}/>
               </PaginationItem>
             </PaginationContent>
           </Pagination>
