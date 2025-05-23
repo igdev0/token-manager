@@ -9,6 +9,7 @@ import {Button} from '@/components/ui/button';
 import {storeToken} from '@/app/dashboard/create-fungible-token/actions';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+import {toast} from 'sonner';
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -38,12 +39,36 @@ export default function CreateFungibleTokenPage() {
       const browserProvider = new BrowserProvider(wallet.currentProvider.provider);
       const signer = await browserProvider.getSigner(wallet.accounts[0]);
       const factory = new ethers.ContractFactory(ERC20Token.abi, ERC20Token.bytecode, signer);
-      const deploy = await factory.deploy(values.name, values.symbol, values.initialSupply, values.decimals);
+      let deploy;
+      try {
+        deploy = await factory.deploy(values.name, values.symbol, values.initialSupply, values.decimals);
+      } catch (err) {
+        toast("There was an error while trying to deploy the token", {
+          description: "Error: " + err.message + "",
+          position: "top-right",
+          classNames: {content: "text-red-500"},
+        });
+        return;
+      }
+
       const token = await deploy.waitForDeployment();
+
       const tokenAddress = await token.getAddress();
       const network = await browserProvider.getNetwork();
-      await storeToken(values.name, values.symbol, tokenAddress, "Fungible", network.name, network.chainId.toString());
-      form.reset();
+
+      try {
+        await storeToken(values.name, values.symbol, tokenAddress, "Fungible", network.name, network.chainId.toString());
+        form.reset();
+        toast("A token was created successfully!", {
+          position: "top-right",
+          classNames: {content: "text-green-500"},
+        });
+      } catch (e) {
+        toast("There was an error while trying to store the token", {
+          position: "top-right",
+          classNames: {content: "text-red-500"},
+        });
+      }
     }
   };
 
@@ -54,22 +79,22 @@ export default function CreateFungibleTokenPage() {
           <fieldset>
             <label htmlFor="name">Name:</label>
             <Input placeholder="Name: e.g: My token" {...form.register('name')}/>
-            <p className="text-red-500">{form.formState.errors?.name?.message??""}</p>
+            <p className="text-red-500">{form.formState.errors?.name?.message ?? ""}</p>
           </fieldset>
           <fieldset>
             <label htmlFor="symbol">Symbol:</label>
             <Input placeholder="Symbol: e.g: MYT" {...form.register('symbol')}/>
-            <p className="text-red-500">{form.formState.errors?.symbol?.message??""}</p>
+            <p className="text-red-500">{form.formState.errors?.symbol?.message ?? ""}</p>
           </fieldset>
           <fieldset>
             <label htmlFor="decimals">Decimals:</label>
             <Input type="number" placeholder="Decimals: e.g: 18" {...form.register('decimals')}/>
-            <p className="text-red-500">{form.formState.errors?.decimals?.message??""}</p>
+            <p className="text-red-500">{form.formState.errors?.decimals?.message ?? ""}</p>
           </fieldset>
           <fieldset>
             <label htmlFor="initialSupply">Initial Supply:</label>
             <Input type="number" placeholder="Initial supply: e.g: 1000000" {...form.register('initialSupply')}/>
-            <p className="text-red-500">{form.formState.errors?.initialSupply?.message??""}</p>
+            <p className="text-red-500">{form.formState.errors?.initialSupply?.message ?? ""}</p>
           </fieldset>
           <div className="mt-4">
             <Button type="submit">Submit</Button>
