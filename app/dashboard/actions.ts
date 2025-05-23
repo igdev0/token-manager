@@ -1,7 +1,11 @@
+"use server";
 import {PrismaClient} from '@/lib/generated/prisma';
 
 const prisma = new PrismaClient();
 
-export async function getTokens() {
-  return prisma.token.findMany();
+export async function getTokens(offset = 1, perPage = 10) {
+  return prisma.token.findMany({
+    take: perPage,
+    skip: offset * perPage,
+  });
 }
