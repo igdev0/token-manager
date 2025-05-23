@@ -1,11 +1,19 @@
 "use client";
 import {Button} from '@/components/ui/button';
 import {Pen} from 'lucide-react';
-import Pager from '@/app/dashboard/pager';
 import {useEffect, useState} from 'react';
 import {getTokens} from '@/app/dashboard/actions';
 import {$Enums} from '@/lib/generated/prisma';
 import Link from 'next/link';
+import {useSearchParams} from 'next/navigation';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination';
 
 export type Token = {
   id: string
@@ -19,11 +27,16 @@ export type Token = {
   created_at: Date
   updated_at: Date
 }
+const MAX_PAGERS = 10;
 export default function Dashboard() {
   const [data, setData] = useState<Token[] | null>(null);
+  const params = useSearchParams();
+  const page = Number(params.get("page") ?? 0);
+  const perPage = Number(params.get("perPage") ?? 10);
+
   useEffect(() => {
-    getTokens().then(setData).catch(console.error);
-  }, []);
+    getTokens(page, perPage).then(setData).catch(console.error);
+  }, [page, perPage]);
 
   if (!data) {
     return (
@@ -74,7 +87,26 @@ export default function Dashboard() {
           }
           </tbody>
         </table>
-        <Pager/>
+        <div className="flex justify-center gap-2">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href={`?page=${page - 1 == 0 ? 1 : page -1}&perPage=${perPage}`}/>
+              </PaginationItem>
+              {
+                Array.from({length: MAX_PAGERS}).map((_, i) => (
+
+                    <PaginationItem>
+                      <PaginationLink isActive={i+1 === page} href={`?page=${i + 1}&perPage=${perPage}`}>{i+1}</PaginationLink>
+                    </PaginationItem>
+                ))
+              }
+              <PaginationItem>
+                <PaginationNext href={`?page=${page + 1 > data.length ? data.length : page + 1}&perPage=${perPage}`}/>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
   );
 }
