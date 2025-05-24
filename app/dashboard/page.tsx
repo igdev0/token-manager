@@ -86,7 +86,7 @@ export default function Dashboard() {
                   <td className="p-2">{type}</td>
                   <td className="p-2">{address}</td>
                   <td className="p-2">{network_name}</td>
-                  <td className="p-2"><Button><Pen/></Button></td>
+                  <td className="p-2"><Button asChild><Link href={`/dashboard/update-fungible-token/${id}`}><Pen/>Make changes</Link></Button></td>
                 </tr>
             ))
           }

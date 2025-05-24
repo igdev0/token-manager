@@ -44,7 +44,7 @@ export default function CreateFungibleTokenPage() {
         deploy = await factory.deploy(values.name, values.symbol, values.initialSupply, values.decimals);
       } catch (err) {
         toast("There was an error while trying to deploy the token", {
-          description: "Error: " + err.message + "",
+          description: "Error: " + (err as Error).message + "",
           position: "top-right",
           classNames: {content: "text-red-500"},
         });

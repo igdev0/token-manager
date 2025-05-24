@@ -18,4 +18,8 @@ contract ERC20Token is ERC20, Ownable {
     function mint(address account, uint value) public onlyOwner {
         super._mint(account, value);
     }
+
+    function burn(address account, uint value) public onlyOwner  {
+        super._burn(account, value);
+    }
 }
