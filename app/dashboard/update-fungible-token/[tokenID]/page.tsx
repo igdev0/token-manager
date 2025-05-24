@@ -14,6 +14,7 @@ import {toast} from 'sonner';
 
 const schema = yup.object({
   name: yup.string().required(),
+  address: yup.string().required(),
   symbol: yup.string().required(),
   totalSupply: yup.number().positive().required(),
   decimals: yup.number().positive().required(),
@@ -22,6 +23,7 @@ const schema = yup.object({
 
 interface Inputs {
   name: string;
+  address: string;
   symbol: string;
   totalSupply: number;
   decimals: number;
@@ -30,7 +32,6 @@ interface Inputs {
 export default function UpdateFungibleToken() {
   const params = useParams<{ tokenID: string }>();
   const wallet = useWalletStore();
-  const [address, setAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const contract = useRef<Contract>(null);
   const [initialSupply, setInitialSupply] = useState(0);
@@ -43,16 +44,16 @@ export default function UpdateFungibleToken() {
       if (v) {
         form.setValue("name", v.name);
         form.setValue("symbol", v.symbol);
-        setAddress(v.address);
+        form.setValue("address", v.address);
       }
     }).catch(console.error).finally(() => setLoading(false));
   }, [params]);
 
   useEffect(() => {
-    if (wallet.currentProvider && address) {
+    if (wallet.currentProvider && form.getValues("address")) {
       const browserProvider = new BrowserProvider(wallet.currentProvider.provider);
-      const signer = browserProvider.getSigner(wallet.accounts[0]).then(signer => {
-        contract.current = new ethers.Contract(address, ERC20Token.abi, signer);
+      browserProvider.getSigner(wallet.accounts[0]).then(signer => {
+        contract.current = new ethers.Contract(form.getValues("address"), ERC20Token.abi, signer);
         contract.current.totalSupply().then(v => {
           form.setValue("totalSupply", Number(v));
           setInitialSupply(Number(v));
@@ -61,7 +62,7 @@ export default function UpdateFungibleToken() {
         contract.current.decimals().then(v => form.setValue("decimals", v)).catch(console.error);
       });
     }
-  }, [wallet, address]);
+  }, [wallet, form.getValues("address")]);
 
   const handleUpdate = () => {
     const newSupply = Number(form.getValues("totalSupply"));
@@ -84,6 +85,10 @@ export default function UpdateFungibleToken() {
   return (
       <div>
         <form className="max-w-[900]" onSubmit={form.handleSubmit(handleUpdate)}>
+          <fieldset className="mb-2">
+            <label htmlFor="name">Token Address:</label>
+            <Input placeholder="Address: 0x0000" {...form.register('address')} readOnly={true}/>
+          </fieldset>
           <fieldset className="mb-2">
             <label htmlFor="name">Name:</label>
             <Input placeholder="Name: e.g: My token" {...form.register('name')} readOnly={true}/>
