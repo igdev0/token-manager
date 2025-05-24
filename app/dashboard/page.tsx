@@ -68,7 +68,7 @@ export default function Dashboard() {
   }
 
   return (
-      <div>
+      <div className="flex justify-center flex-col items-center">
         <table>
           <thead className="bg-gray-50">
           <tr>

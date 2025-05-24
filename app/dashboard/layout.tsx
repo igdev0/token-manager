@@ -15,19 +15,17 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-      <div className="w-full h-full">
-        <div className="container mx-auto flex flex-col gap-4 py-2 px-2">
-          <div className="tabs">
-            <Button asChild={true}>
-              <Link href="/dashboard/create-fungible-token">
-                New Fungible
-              </Link>
-            </Button>
-            <Button variant="secondary">
-              New Non-fungible</Button>
-          </div>
-          {children}
+      <div className="w-full h-full max-w-[1000] mx-auto gap-4 flex flex-col">
+        <div className="tabs flex justify-end">
+          <Button asChild={true}>
+            <Link href="/dashboard/create-fungible-token">
+              New Fungible
+            </Link>
+          </Button>
+          <Button variant="secondary">
+            New Non-fungible</Button>
         </div>
+        {children}
       </div>
   );
 }
