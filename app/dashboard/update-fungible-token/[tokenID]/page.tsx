@@ -64,17 +64,13 @@ export default function UpdateFungibleToken() {
   }, [wallet, address]);
 
   const handleUpdate = () => {
-    const newSupply = form.getValues("totalSupply");
+    const newSupply = Number(form.getValues("totalSupply"));
+    const owner = wallet.accounts[0];
     if (initialSupply > newSupply) {
-      contract.current?.balanceOf(address).then(v => console.log(`balance: ${v}`));
-      console.log(`Burning ${initialSupply - newSupply} tokens`);
-      contract.current?.burn(address, BigInt(initialSupply - newSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(err => {
-        const _err = contract.current?.interface.parseError(err);
-        console.log({_err});
-      });
+      contract.current?.burn(owner, BigInt(initialSupply - newSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(() => toast(`Failed burning ${initialSupply - newSupply} tokens`, {position: "top-right"}));
     }
     if(initialSupply < newSupply) {
-      contract.current?.mint(address, BigInt(newSupply - initialSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(console.error);
+      contract.current?.mint(owner, BigInt(newSupply - initialSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(() => toast(`Failed minting ${newSupply - initialSupply} tokens`, {position: "top-right"}));
     }
   };
 
