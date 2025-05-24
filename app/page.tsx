@@ -2,6 +2,7 @@
 import {Button} from '@/components/ui/button';
 import {useWalletStore} from '@/store/wallet';
 import Navbar from '@/components/navbar';
+import Spinner from '@/components/spinner';
 
 export default function Home() {
   const wallet = useWalletStore();
@@ -9,7 +10,7 @@ export default function Home() {
 
   if (!wallet.initialized) {
     return (
-        <h1>Loading ...</h1>
+        <Spinner/>
     );
   }
   return (

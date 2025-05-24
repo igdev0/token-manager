@@ -11,6 +11,7 @@ import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {toast} from 'sonner';
+import Spinner from '@/components/spinner';
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -77,8 +78,7 @@ export default function UpdateFungibleToken() {
 
   if (loading) {
     return (
-        <div
-            className="w-[40] aspect-square border-2 border-gray-900 border-r-transparent border-b-transparent rounded-full animate-spin mx-auto"/>
+        <Spinner/>
     );
   }
 

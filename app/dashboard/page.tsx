@@ -14,6 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination';
+import Spinner from '@/components/spinner';
 
 export type Token = {
   id: string
@@ -45,8 +46,7 @@ export default function Dashboard() {
 
   if (!data) {
     return (
-        <div
-            className="w-[40] aspect-square border-2 border-gray-900 border-r-transparent border-b-transparent rounded-full animate-spin mx-auto"/>
+        <Spinner/>
     );
   }
 
