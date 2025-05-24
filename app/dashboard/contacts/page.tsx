@@ -21,7 +21,7 @@ export default function Page() {
 
   if(data.length === 0) {
     return (
-        <div>
+        <div className="w-full text-center">
           <h1 className="text-2xl font-extrabold"> No contacts found.</h1>
           <p className="mb-4">Create a contact and will be displayed here</p>
           <Button asChild={true}><Link href="/contact/create">Create Contact</Link></Button>
