@@ -101,7 +101,7 @@ export default function Dashboard() {
               {
                 Array.from({length: totalPages}).map((_, i) => (
 
-                    <PaginationItem>
+                    <PaginationItem key={i}>
                       <PaginationLink isActive={i + 1 === page}
                                       href={`?page=${i + 1}`}>{i + 1}</PaginationLink>
                     </PaginationItem>
