@@ -15,7 +15,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-      <div className="w-full h-full max-w-[1000] mx-auto gap-4 flex flex-col">
+      <div className="w-full h-full max-w-[1200] mx-auto gap-4 flex flex-col">
         <div className="tabs flex justify-end">
           <Button asChild={true}>
             <Link href="/dashboard/create-fungible-token">
