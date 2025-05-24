@@ -13,7 +13,6 @@ export default function Navbar() {
             <strong>Token manager</strong>
           </Link>
           <div className="flex gap-2 items-center">
-            {authenticated && <Link href="/dashboard" className="px-3">Dashboard</Link>}
             <WalletSelector/>
           </div>
         </div>

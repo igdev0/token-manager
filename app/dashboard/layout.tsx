@@ -1,8 +1,8 @@
 import type {Metadata} from "next";
 import {ReactNode} from 'react';
 import "./style.css";
-import {Button} from '@/components/ui/button';
-import Link from 'next/link';
+import Sidebar from '@/components/sidebar';
+import WalletSelector from '@/components/wallet-selector';
 
 export const metadata: Metadata = {
   title: "Token manager / Dashboard",
@@ -14,18 +14,16 @@ export default function RootLayout({
                                    }: Readonly<{
   children: ReactNode;
 }>) {
+
   return (
-      <div className="w-full h-full max-w-[1200] mx-auto gap-4 flex flex-col">
-        <div className="tabs flex justify-end">
-          <Button asChild={true}>
-            <Link href="/dashboard/create-fungible-token">
-              New Fungible
-            </Link>
-          </Button>
-          <Button variant="secondary">
-            New Non-fungible</Button>
+      <div className="w-full h-screen mx-auto gap-4 flex">
+        <Sidebar/>
+        <div className="w-full">
+        <div className="container mx-auto py-2 flex justify-end">
+          <WalletSelector/>
         </div>
-        {children}
+          {children}
+        </div>
       </div>
   );
 }
