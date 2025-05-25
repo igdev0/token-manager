@@ -24,7 +24,7 @@ export default function Page() {
         <div className="w-full text-center">
           <h1 className="text-2xl font-extrabold"> No contacts found.</h1>
           <p className="mb-4">Create a contact and will be displayed here</p>
-          <Button asChild={true}><Link href="/contact/create">Create Contact</Link></Button>
+          <Button asChild={true}><Link href="/dashboard/contacts/create">Create Contact</Link></Button>
         </div>
     )
   }
