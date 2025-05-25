@@ -1,18 +1,43 @@
 "use client";
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Contact} from '@/lib/generated/prisma';
-import {fetchContacts} from '@/app/dashboard/contacts/actions';
+import {fetchContacts, findContacts} from '@/app/dashboard/contacts/actions';
 import Spinner from '@/components/spinner';
 import {Button} from '@/components/ui/button';
 import Link from 'next/link';
+import {Input} from '@/components/ui/input';
+import {PlaneTakeoff} from 'lucide-react';
 import {useWalletStore} from '@/store/wallet';
+import {Checkbox} from '@/components/ui/checkbox';
+import {useRouter, useSearchParams} from 'next/navigation';
 
 export default function Page() {
   const [data, setData] = useState<Contact[] | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [owner] = useWalletStore().accounts;
+  const timer = useRef<any>(null);
   useEffect(() => {
     owner && fetchContacts(owner).then(setData).catch(console.error);
   }, [owner]);
+
+  const onCheckedChange = (id: string) => {
+    return (checked: boolean) => {
+      setSelected(checked ? [...selected, id] : selected.filter(v => v !== id));
+    };
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(timer.current);
+    const target = e.currentTarget;
+    router.push("/dashboard/contacts?search=" + (target.value));
+    timer.current = setTimeout(() => {
+      findContacts(target.value).then(setData);
+      clearTimeout(timer.current);
+    }, 500);
+  };
+
 
   if (!data) {
     return (
@@ -20,7 +45,7 @@ export default function Page() {
     );
   }
 
-  if (data.length === 0) {
+  if (data.length === 0 && searchParams.get("search") === null) {
     return (
         <div className="w-full text-center">
           <h1 className="text-2xl font-extrabold"> No contacts found.</h1>
@@ -35,33 +60,48 @@ export default function Page() {
   return (
       <div>
         <h1 className="text-2xl font-extrabold">Contacts</h1>
-        <div className="flex w-full justify-end mb-4">
+        <div className="flex w-full justify-end mb-4 gap-2">
+          <Button disabled={selected.length === 0}
+                  variant="outline"><PlaneTakeoff/> Airdrop {selected.length > 0 ? `to selected (${selected.length})` : ""}
+          </Button>
           <Button className="left-auto" asChild={true}>
             <Link href="/dashboard/contacts/create">
               Add new
             </Link>
           </Button>
         </div>
-        <table className="w-full">
-          <thead className="bg-gray-200">
-          <tr>
-            <th className={thCls}>Alias</th>
-            <th className={thCls}>Address</th>
-            <th className={thCls}>Tags</th>
-          </tr>
-          </thead>
-          <tbody>
-          {
-            data.map(({id, alias, address, tags}) => (
-                <tr key={id} className="nth-[even]:bg-gray-100">
-                  <td className="px-4 py-2">{alias}</td>
-                  <td className="px-4 py-2">{address}</td>
-                  <td className="px-4 py-2 flex gap-2">{tags.map(tag => (
-                      <span key={tag} className="px-2 py-1 text-sm bg-black text-white rounded-sm">{tag}</span>))}</td>
-                </tr>))
-          }
-          </tbody>
-        </table>
+        <Input placeholder="Search contacts" className="mb-4 max-w-[400px]" onChange={handleSearch} defaultValue={searchParams.get("search")??""}/>
+        {
+          data.length === 0 ? (
+              <div className="w-full text-center">
+                <h1 className="text-2xl font-extrabold"> No contacts found.</h1>
+                <p className="mb-4">No contact matching: <strong>{searchParams.get("search")}</strong>.</p>
+              </div>
+          ) : <table className="w-full">
+            <thead className="bg-gray-200">
+            <tr>
+              <th className={thCls}>Select</th>
+              <th className={thCls}>Alias</th>
+              <th className={thCls}>Address</th>
+              <th className={thCls}>Tags</th>
+            </tr>
+            </thead>
+            <tbody>
+            {
+              data.map(({id, alias, address, tags}) => (
+                  <tr key={id} className="nth-[even]:bg-gray-100">
+                    <td className="px-4 flex items-center"><Checkbox name={id} onCheckedChange={onCheckedChange(id)}/>
+                    </td>
+                    <td className="px-4 py-2">{alias}</td>
+                    <td className="px-4 py-2">{address}</td>
+                    <td className="px-4 py-2 flex gap-2">{tags.map(tag => (
+                        <span key={tag}
+                              className="px-2 py-1 text-sm bg-black text-white rounded-sm">{tag}</span>))}</td>
+                  </tr>))
+            }
+            </tbody>
+          </table>
+        }
       </div>
   );
 }
