@@ -2,7 +2,6 @@
 import {BrowserProvider, ethers} from 'ethers';
 import ERC20Token from '@/artifacts/contracts/ERC20Token.sol/ERC20Token.json';
 import {useWalletStore} from '@/store/wallet';
-import {Form} from '@/components/ui/form';
 import {useForm} from 'react-hook-form';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
@@ -73,7 +72,7 @@ export default function CreateFungibleTokenPage() {
   };
 
   return (
-      <Form {...form}>
+      <div className="w-full max-w-[1600] mx-auto px-2">
         <h1 className="text-2xl font-extrabold">Create new token</h1>
         <form className="max-w-[900] flex flex-col gap-2" onSubmit={form.handleSubmit(createFungibleToken)}>
           <fieldset>
@@ -100,6 +99,6 @@ export default function CreateFungibleTokenPage() {
             <Button type="submit">Submit</Button>
           </div>
         </form>
-      </Form>
+      </div>
   );
 }
