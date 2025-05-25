@@ -33,10 +33,14 @@ export default function Page() {
   const thCls = "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider";
 
   return (
-      <div className="w-full max-w-[1600] mx-auto px-2">
+      <div>
         <h1 className="text-2xl font-extrabold">Contacts</h1>
         <div className="flex w-full justify-end mb-4">
-          <Button className="left-auto">Add new</Button>
+          <Button className="left-auto" asChild={true}>
+            <Link href="/dashboard/contacts/create">
+              Add new
+            </Link>
+          </Button>
         </div>
         <table className="w-full">
           <thead className="bg-gray-200">

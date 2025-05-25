@@ -71,7 +71,7 @@ export default function UpdateFungibleToken() {
     if (initialSupply > newSupply) {
       contract.current?.burn(owner, BigInt(initialSupply - newSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(() => toast(`Failed burning ${initialSupply - newSupply} tokens`, {position: "top-right"}));
     }
-    if(initialSupply < newSupply) {
+    if (initialSupply < newSupply) {
       contract.current?.mint(owner, BigInt(newSupply - initialSupply)).then(() => toast(`The total supply has been updated to ${newSupply}`, {position: "top-right"})).catch(() => toast(`Failed minting ${newSupply - initialSupply} tokens`, {position: "top-right"}));
     }
   };
@@ -83,33 +83,31 @@ export default function UpdateFungibleToken() {
   }
 
   return (
-      <div>
-        <form className="w-full max-w-[1600] mx-auto px-2" onSubmit={form.handleSubmit(handleUpdate)}>
-          <fieldset className="mb-2">
-            <label htmlFor="name">Token Address:</label>
-            <Input placeholder="Address: 0x0000" {...form.register('address')} readOnly={true}/>
-          </fieldset>
-          <fieldset className="mb-2">
-            <label htmlFor="name">Name:</label>
-            <Input placeholder="Name: e.g: My token" {...form.register('name')} readOnly={true}/>
-          </fieldset>
-          <fieldset className="mb-2">
-            <label htmlFor="symbol">Symbol:</label>
-            <Input placeholder="Symbol: e.g: MYT" {...form.register('symbol')} readOnly={true}/>
-          </fieldset>
-          <fieldset className="mb-2">
-            <label htmlFor="decimals">Decimals:</label>
-            <Input type="number" placeholder="Decimals: e.g: 18" {...form.register('decimals')} readOnly={true}/>
-          </fieldset>
-          <fieldset className="mb-2">
-            <label htmlFor="initialSupply">Total Supply:</label>
-            <Input type="number" placeholder="Initial supply: e.g: 1000000" {...form.register('totalSupply')}/>
-            <p className="text-red-500">{form.formState.errors?.totalSupply?.message ?? ""}</p>
-          </fieldset>
-          <div className="mt-4">
-            <Button type="submit">Submit</Button>
-          </div>
-        </form>
-      </div>
+      <form onSubmit={form.handleSubmit(handleUpdate)}>
+        <fieldset className="mb-2">
+          <label htmlFor="name">Token Address:</label>
+          <Input placeholder="Address: 0x0000" {...form.register('address')} readOnly={true}/>
+        </fieldset>
+        <fieldset className="mb-2">
+          <label htmlFor="name">Name:</label>
+          <Input placeholder="Name: e.g: My token" {...form.register('name')} readOnly={true}/>
+        </fieldset>
+        <fieldset className="mb-2">
+          <label htmlFor="symbol">Symbol:</label>
+          <Input placeholder="Symbol: e.g: MYT" {...form.register('symbol')} readOnly={true}/>
+        </fieldset>
+        <fieldset className="mb-2">
+          <label htmlFor="decimals">Decimals:</label>
+          <Input type="number" placeholder="Decimals: e.g: 18" {...form.register('decimals')} readOnly={true}/>
+        </fieldset>
+        <fieldset className="mb-2">
+          <label htmlFor="initialSupply">Total Supply:</label>
+          <Input type="number" placeholder="Initial supply: e.g: 1000000" {...form.register('totalSupply')}/>
+          <p className="text-red-500">{form.formState.errors?.totalSupply?.message ?? ""}</p>
+        </fieldset>
+        <div className="mt-4">
+          <Button type="submit">Submit</Button>
+        </div>
+      </form>
   );
 }

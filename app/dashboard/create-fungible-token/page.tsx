@@ -72,7 +72,7 @@ export default function CreateFungibleTokenPage() {
   };
 
   return (
-      <div className="w-full max-w-[1600] mx-auto px-2">
+      <>
         <h1 className="text-2xl font-extrabold">Create new token</h1>
         <form className="max-w-[900] flex flex-col gap-2" onSubmit={form.handleSubmit(createFungibleToken)}>
           <fieldset>
@@ -99,6 +99,6 @@ export default function CreateFungibleTokenPage() {
             <Button type="submit">Submit</Button>
           </div>
         </form>
-      </div>
+      </>
   );
 }

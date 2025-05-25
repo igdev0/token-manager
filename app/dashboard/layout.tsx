@@ -18,10 +18,10 @@ export default function RootLayout({
   return (
       <div className="w-full h-screen mx-auto gap-4 flex">
         <Sidebar/>
-        <div className="w-full">
-        <div className="container mx-auto py-2 flex justify-end">
-          <WalletSelector/>
-        </div>
+        <div className="w-full max-w-[1600] mx-auto px-2">
+          <div className="container mx-auto py-2 flex justify-end">
+            <WalletSelector/>
+          </div>
           {children}
         </div>
       </div>

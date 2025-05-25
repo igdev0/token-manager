@@ -68,7 +68,7 @@ export default function Dashboard() {
   }
 
   return (
-      <div className="w-full max-w-[1600] mx-auto px-2 flex justify-center flex-col items-center">
+      <div className="flex justify-center flex-col items-center">
         <table className="w-full">
           <thead className="bg-gray-50">
           <tr>
