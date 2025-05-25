@@ -84,7 +84,7 @@ export default function UpdateFungibleToken() {
 
   return (
       <div>
-        <form className="max-w-[900]" onSubmit={form.handleSubmit(handleUpdate)}>
+        <form className="w-full max-w-[1600] mx-auto px-2" onSubmit={form.handleSubmit(handleUpdate)}>
           <fieldset className="mb-2">
             <label htmlFor="name">Token Address:</label>
             <Input placeholder="Address: 0x0000" {...form.register('address')} readOnly={true}/>
