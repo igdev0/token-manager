@@ -17,7 +17,7 @@ datasource db {
 model Contact {
   id         String   @id @default(uuid())
   alias      String
-  address    String
+  address    String   @unique
   tags       String[]
   owner      String
   created_at DateTime @default(now())
