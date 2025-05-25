@@ -5,13 +5,14 @@ import {fetchContacts} from '@/app/dashboard/contacts/actions';
 import Spinner from '@/components/spinner';
 import {Button} from '@/components/ui/button';
 import Link from 'next/link';
+import {useWalletStore} from '@/store/wallet';
 
 export default function Page() {
   const [data, setData] = useState<Contact[] | null>(null);
-
+  const [owner] = useWalletStore().accounts;
   useEffect(() => {
-    fetchContacts().then(setData).catch(console.error);
-  }, []);
+    owner && fetchContacts(owner).then(setData).catch(console.error);
+  }, [owner]);
 
   if (!data) {
     return (
