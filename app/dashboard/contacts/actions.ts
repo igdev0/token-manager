@@ -7,3 +7,7 @@ const client = new PrismaClient();
 export async function fetchContacts(owner:string) {
   return client.contact.findMany({where: {owner}});
 }
+
+export async function createContact(owner:string, alias:string, tags: string[], address:string) {
+  return client.contact.create({data: {owner, alias, tags, address}});
+}

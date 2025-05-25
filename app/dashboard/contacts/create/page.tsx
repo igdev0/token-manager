@@ -7,6 +7,9 @@ import {useState} from 'react';
 import {X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {clsx} from 'clsx';
+import {createContact} from '@/app/dashboard/contacts/actions';
+import {useWalletStore} from '@/store/wallet';
+import {toast} from 'sonner';
 
 const schema = yup.object({
   alias: yup.string().required(),
@@ -22,15 +25,25 @@ type FormValues = {
 }
 
 export default function CreateContactPage() {
+  const [owner] = useWalletStore().accounts;
   const form = useForm<FormValues>({
     resolver: yupResolver(schema) as keyof object,
   });
 
   const onSubmit = () => {
-    console.log(form.getValues());
+    const {tags, address, alias} = form.getValues();
+    createContact(owner, alias, tags, address).then(_ => {
+      toast("Contact added!", {
+        position: "top-right",
+        description: `Successfully created contact ${alias} with address ${address}`
+      });
+      form.reset();
+    }).catch(err => {
+      toast("Failed creating contact", {position: "top-right", description: `Details: ${err.message}`});
+    });
   };
 
-  const fieldsetCls = clsx("mb-2")
+  const fieldsetCls = clsx("mb-2");
 
   return (
       <div className="max-w-[900]">
