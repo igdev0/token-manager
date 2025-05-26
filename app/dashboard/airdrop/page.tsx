@@ -13,6 +13,10 @@ import {Input} from '@/components/ui/input';
 import {useForm} from 'react-hook-form';
 import {Button} from '@/components/ui/button';
 import {useSearchParams} from 'next/navigation';
+import {User2} from 'lucide-react';
+import {BrowserProvider, ethers} from 'ethers';
+import ERC20Token from '@/artifacts/contracts/ERC20Token.sol/ERC20Token.json';
+import {toast} from 'sonner';
 
 export default function AirdropPage() {
   const [selectedContacts, setSelectedContacts] = useState<{alias: string, address: string}[]>([]);
@@ -22,6 +26,7 @@ export default function AirdropPage() {
   const [tokens, setTokens] = useState<Token[] | null>(null);
   const [contacts, setContacts] = useState<Contact[] | null>(null);
   const contactListRef = useRef(null);
+  const wallet = useWalletStore();
   const [owner] = useWalletStore().accounts;
   const form = useForm();
 
@@ -40,9 +45,25 @@ export default function AirdropPage() {
     fetchContacts(owner, searchParams.get("search") ?? "", tags ?? []).then(setContacts).catch(console.error);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const values = form.getValues();
-    console.log(values)
+    if(!wallet.currentProvider?.provider || !tokens) {return}
+    const _token = !token ? tokens[0].address : token;
+    const browserProvider = new BrowserProvider(wallet.currentProvider?.provider);
+    const signer = await browserProvider.getSigner(owner);
+    const contract = new ethers.Contract(_token, ERC20Token.abi, signer);
+    const airdrop = Object.keys(values).map(address => ({
+      addr: address,
+      amount: values[address]
+    }))
+    try {
+      const tx = await contract.airdrop(airdrop, 0);
+      await tx.wait();
+      toast("Tokens minted!", {position: "top-right", description: "Tokens airdroped successfully!"})
+    } catch (err) {
+      console.error(err);
+      toast("Failed to airdrop tokens", {position: "top-right", description: (err as Error).message})
+    }
   }
 
   useEffect(() => {
@@ -73,16 +94,17 @@ export default function AirdropPage() {
         </RadioGroup>
         <ContactsList baseURL="/dashboard/airdrop" ref={contactListRef} data={contacts} tags={tags} onSearchInputChange={onSearchInputChange}
                       onTagsChange={handleTagsChange} onCheckedChange={onCheckedChange}/>
+        <h4>Selected ({selectedContacts.length})</h4>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {
             selectedContacts.map((item) => (
-                <fieldset key={item.address}>
-                  <legend>Contact: {item.alias}</legend>
-                  <Input type="number" placeholder="Amount" {...form.register(item.address)}/>
+                <fieldset key={item.address} className="mb-2">
+                  <label className="font-bold mb-1 inline-flex gap-2 items-center" htmlFor={item.address}><User2/>{item.alias}</label>
+                  <Input className="max-w-[500]" type="number" placeholder="Amount" id={item.address} {...form.register(item.address, {required: true})}/>
                 </fieldset>
             ))
           }
-          <Button type="submit">Mint</Button>
+          <Button disabled={!selectedContacts.length} type="submit">Mint</Button>
         </form>
       </>
   );
