@@ -46,8 +46,6 @@ export default function AirdropPage() {
       <Spinner/>
   );
 
-  const thCls = "px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider";
-
   return (
       <>
         <h1 className="text-2xl font-bold mb-4">Airdrop Tokens</h1>
