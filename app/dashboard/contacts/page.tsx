@@ -1,25 +1,31 @@
 "use client";
 import {useEffect, useRef, useState} from 'react';
 import {Contact} from '@/lib/generated/prisma';
-import {fetchContacts, findContacts} from '@/app/dashboard/contacts/actions';
+import {fetchContacts} from '@/app/dashboard/contacts/actions';
 import Spinner from '@/components/spinner';
 import {Button} from '@/components/ui/button';
 import Link from 'next/link';
 import {PlaneTakeoff} from 'lucide-react';
 import {useWalletStore} from '@/store/wallet';
-import {useRouter, useSearchParams} from 'next/navigation';
-import ContactsList from '@/components/contacts-list';
+import {useSearchParams} from 'next/navigation';
+import ContactsList, {ContactsListRef} from '@/components/contacts-list';
+import {getContactTags} from '@/app/dashboard/airdrop/actions';
 
 export default function Page() {
   const [data, setData] = useState<Contact[] | null>(null);
+  const [tags, setTags] = useState<string[] | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [owner] = useWalletStore().accounts;
-  const timer = useRef<any>(null);
+  const contactListRef = useRef<ContactsListRef>(null);
   useEffect(() => {
-    owner && fetchContacts(owner).then(setData).catch(console.error);
-  }, [owner]);
+    if (owner) {
+      const tags = contactListRef.current?.getTags()??[];
+      fetchContacts(owner, searchParams.get("search") ?? "", tags ?? []).then(setData).catch(console.error);
+      getContactTags(owner).then(setTags).catch(console.error);
+    }
+
+  }, [owner, contactListRef]);
 
   const onCheckedChange = (id: string) => {
     return (checked: boolean) => {
@@ -27,18 +33,16 @@ export default function Page() {
     };
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    clearTimeout(timer.current);
-    const target = e.currentTarget;
-    router.push("/dashboard/contacts?search=" + (target.value));
-    timer.current = setTimeout(() => {
-      findContacts(target.value).then(setData);
-      clearTimeout(timer.current);
-    }, 500);
+  const onTagsChange = (tags: string[]) => {
+    fetchContacts(owner, searchParams.get("search") ?? "", tags ?? []).then(setData).catch(console.error);
   };
 
+  const onSearch = (value: string) => {
+    const tags = contactListRef.current?.getTags()??[];
+    fetchContacts(owner, value, tags).then(setData);
+  };
 
-  if (!data) {
+  if (!data || !tags) {
     return (
         <Spinner/>
     );
@@ -67,8 +71,8 @@ export default function Page() {
             </Link>
           </Button>
         </div>
-        <ContactsList data={data} onCheckedChange={onCheckedChange} search={searchParams.get("search")}
-                      onSearchInputChange={handleSearch}/>
+        <ContactsList ref={contactListRef} data={data} tags={tags} onTagsChange={onTagsChange} onCheckedChange={onCheckedChange}
+                      onSearchInputChange={onSearch}/>
 
       </div>
   );
