@@ -18,9 +18,10 @@ export default function Page() {
   const searchParams = useSearchParams();
   const [owner] = useWalletStore().accounts;
   const contactListRef = useRef<ContactsListRef>(null);
+
   useEffect(() => {
     if (owner) {
-      const tags = contactListRef.current?.getTags()??[];
+      const tags = contactListRef.current?.getTags() ?? [];
       fetchContacts(owner, searchParams.get("search") ?? "", tags ?? []).then(setData).catch(console.error);
       getContactTags(owner).then(setTags).catch(console.error);
     }
@@ -38,7 +39,7 @@ export default function Page() {
   };
 
   const onSearch = (value: string) => {
-    const tags = contactListRef.current?.getTags()??[];
+    const tags = contactListRef.current?.getTags() ?? [];
     fetchContacts(owner, value, tags).then(setData);
   };
 
@@ -71,9 +72,14 @@ export default function Page() {
             </Link>
           </Button>
         </div>
-        <ContactsList ref={contactListRef} data={data} tags={tags} onTagsChange={onTagsChange} onCheckedChange={onCheckedChange}
-                      onSearchInputChange={onSearch}/>
-
+        <ContactsList ref={contactListRef}
+                      data={data}
+                      tags={tags}
+                      onTagsChange={onTagsChange}
+                      onCheckedChange={onCheckedChange}
+                      baseURL="/dashboard/contacts"
+                      onSearchInputChange={onSearch}
+        />
       </div>
   );
 }

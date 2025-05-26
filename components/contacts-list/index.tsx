@@ -9,12 +9,13 @@ export interface ContactsListRef {
   getTags: () => string[],
 }
 
-export default function ContactsList({ref, data, onCheckedChange, onSearchInputChange, tags, onTagsChange}: {
+export default function ContactsList({ref, data, onCheckedChange, onSearchInputChange, tags, onTagsChange, baseURL = "/dashboard/contacts"}: {
   data: Contact[],
+  baseURL: string,
   tags: string[],
   ref: Ref<ContactsListRef>,
   onTagsChange: (tags: string[]) => void,
-  onCheckedChange: (id: string) => (checked: boolean) => void,
+  onCheckedChange: (alias: string, address: string) => (checked: boolean) => void,
   onSearchInputChange: (value: string) => void,
 }) {
   const timer = useRef<any>(null);
@@ -25,7 +26,7 @@ export default function ContactsList({ref, data, onCheckedChange, onSearchInputC
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     clearTimeout(timer.current);
     const target = e.currentTarget;
-    router.push(`/dashboard/contacts?search=${target?.value ?? ""}&tags=${selectedTags?.join(selectedTags.length > 0 ? "," : "")}`);
+    router.push(`${baseURL}?search=${target?.value ?? ""}&tags=${selectedTags?.join(selectedTags.length > 0 ? "," : "")}`);
     timer.current = setTimeout(() => {
       onSearchInputChange(target?.value ?? "");
       clearTimeout(timer.current);
@@ -36,7 +37,7 @@ export default function ContactsList({ref, data, onCheckedChange, onSearchInputC
     const update = selectedTags?.includes(tag) ? selectedTags.filter(v => v !== tag) : [...selectedTags ?? [], tag];
     setSelectedTags(update);
     onTagsChange(update);
-    router.push(`/dashboard/contacts?search=${searchParams.get("search") ?? ""}&tags=${update.join(update.length > 0 ? "," : "")}`);
+    router.push(`${baseURL}?search=${searchParams.get("search") ?? ""}&tags=${update.join(update.length > 0 ? "," : "")}`);
   };
   useLayoutEffect(() => {
     if (selectedTags) {
@@ -87,7 +88,7 @@ export default function ContactsList({ref, data, onCheckedChange, onSearchInputC
             {
               data.map(({id, alias, address, tags}) => (
                   <tr key={id} className="nth-[even]:bg-gray-100">
-                    <td className="px-4 flex items-center"><Checkbox name={id} onCheckedChange={onCheckedChange(id)}/>
+                    <td className="px-4 flex items-center"><Checkbox name={id} onCheckedChange={onCheckedChange(alias, address)}/>
                     </td>
                     <td className="px-4 py-2">{alias}</td>
                     <td className="px-4 py-2">{address}</td>

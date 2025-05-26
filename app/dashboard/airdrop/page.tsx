@@ -3,26 +3,32 @@ import {useWalletStore} from '@/store/wallet';
 import {Token} from '@/app/dashboard/page';
 import {useEffect, useRef, useState} from 'react';
 import {Contact} from '@/lib/generated/prisma';
-import {getContactAddressesByTags, getContacts, getContactTags, getTokens} from '@/app/dashboard/airdrop/actions';
+import {getContacts, getContactTags, getTokens} from '@/app/dashboard/airdrop/actions';
 import Spinner from '@/components/spinner';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Label} from '@/components/ui/label';
 import ContactsList from '@/components/contacts-list';
-import {findContacts} from '@/app/dashboard/contacts/actions';
+import {fetchContacts, findContacts} from '@/app/dashboard/contacts/actions';
+import {Input} from '@/components/ui/input';
+import {useForm} from 'react-hook-form';
+import {Button} from '@/components/ui/button';
+import {useSearchParams} from 'next/navigation';
 
 export default function AirdropPage() {
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<{alias: string, address: string}[]>([]);
+  const searchParams = useSearchParams();
   const [tags, setTags] = useState<string[] | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [tokens, setTokens] = useState<Token[] | null>(null);
   const [contacts, setContacts] = useState<Contact[] | null>(null);
   const contactListRef = useRef(null);
   const [owner] = useWalletStore().accounts;
+  const form = useForm();
 
 
-  const onCheckedChange = (id: string) => {
+  const onCheckedChange = (alias: string, address: string) => {
     return (checked: boolean) => {
-      setSelectedContacts(checked ? [...selectedContacts, id] : selectedContacts.filter(v => v !== id));
+      setSelectedContacts(checked ? [...selectedContacts, {alias, address}] : selectedContacts.filter(v => v.address !== address));
     };
   };
 
@@ -31,8 +37,13 @@ export default function AirdropPage() {
   };
 
   const handleTagsChange = (tags: string[]) => {
-    getContactAddressesByTags(tags, owner).then(setSelectedContacts).catch(console.error);
+    fetchContacts(owner, searchParams.get("search") ?? "", tags ?? []).then(setContacts).catch(console.error);
   };
+
+  const onSubmit = () => {
+    const values = form.getValues();
+    console.log(values)
+  }
 
   useEffect(() => {
     if (owner) {
@@ -60,8 +71,19 @@ export default function AirdropPage() {
             ))
           }
         </RadioGroup>
-        <ContactsList ref={contactListRef} data={contacts} tags={tags} onSearchInputChange={onSearchInputChange}
+        <ContactsList baseURL="/dashboard/airdrop" ref={contactListRef} data={contacts} tags={tags} onSearchInputChange={onSearchInputChange}
                       onTagsChange={handleTagsChange} onCheckedChange={onCheckedChange}/>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          {
+            selectedContacts.map((item) => (
+                <fieldset key={item.address}>
+                  <legend>Contact: {item.alias}</legend>
+                  <Input type="number" placeholder="Amount" {...form.register(item.address)}/>
+                </fieldset>
+            ))
+          }
+          <Button type="submit">Mint</Button>
+        </form>
       </>
   );
 }
