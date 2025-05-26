@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import {Coins, Contact, ImageIcon, LayoutDashboardIcon} from 'lucide-react';
+import {Coins, Contact, ImageIcon, LayoutDashboardIcon, PlaneTakeoff} from 'lucide-react';
 import {clsx} from 'clsx';
 import {usePathname} from 'next/navigation';
 import Logo from '@/components/logo';
@@ -28,6 +28,10 @@ export default function Sidebar() {
         <Link href="/dashboard/create-fungible-token" className={clsx(linkCls, path === '/dashboard/create-fungible-token' && activeCls)}>
           <Coins className={iconCls}/>
           Create Fungible
+        </Link>
+        <Link href="/dashboard/airdrop" className={clsx(linkCls, path === '/dashboard/airdrop' && activeCls)}>
+          <PlaneTakeoff className={iconCls}/>
+          Airdrop
         </Link>
         <Link href="/dashboard/create-fungible-token" className={linkCls}>
           <ImageIcon className={iconCls}/>

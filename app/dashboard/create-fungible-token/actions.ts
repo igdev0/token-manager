@@ -11,11 +11,11 @@ export async function storeToken(name: string, symbol: string, tokenAddress: str
     data: {
       name: name,
       symbol: symbol,
-      address: tokenAddress,
+      address: tokenAddress.toLowerCase(),
       type,
       network_name,
       chain_id,
-      owner
+      owner: owner.toLowerCase()
     }
   });
 }

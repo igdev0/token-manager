@@ -15,6 +15,10 @@ export async function getContactAddressesByTags(tags: string[], owner: string) {
   return client.contact.findMany({where: {owner, tags: {hasSome: tags}}}).then(res => Array.from(new Set(res.map(r => r.address))));
 }
 
+export async function getContacts(owner: string) {
+  return client.contact.findMany({where: {owner}});
+}
+
 export async function getContactTags(owner: string) {
   return client.contact.findMany({where: {owner}}).then(res => Array.from(new Set(res.flatMap(r => r.tags))));
 }
