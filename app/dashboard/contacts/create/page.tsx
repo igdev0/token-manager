@@ -32,6 +32,7 @@ export default function CreateContactPage() {
 
   const onSubmit = () => {
     const {tags, address, alias} = form.getValues();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createContact(owner, alias, tags, address).then(_ => {
       toast("Contact added!", {
         position: "top-right",
