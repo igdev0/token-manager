@@ -11,6 +11,7 @@ export default function Background() {
   // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      if(ref.current === null) return;
       const rect = ref.current?.getBoundingClientRect();
       if (rect) {
         mouse.current.x = e.clientX - rect.left;
@@ -24,11 +25,13 @@ export default function Background() {
   // Smooth animation
   useEffect(() => {
     const ctx = ref.current?.getContext('2d');
+
     if (!ctx || !ref.current) return;
 
     const render = () => {
       circle.current.x += (mouse.current.x - circle.current.x) * 0.01;
       circle.current.y += (mouse.current.y - circle.current.y) * 0.01;
+      if (ref.current === null) return;
 
       ctx.clearRect(0, 0, ref.current.width, ref.current.height);
       const radius = Math.min(ref.current.width, ref.current.height) / 5;

@@ -1,6 +1,6 @@
 "use client";
 import {Button} from '@/components/ui/button';
-import {Pen} from 'lucide-react';
+import {Pen, Plus} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {getTokens, getTotalTokens} from '@/app/dashboard/actions';
 import {$Enums} from '@/lib/generated/prisma';
@@ -15,6 +15,10 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination';
 import Spinner from '@/components/spinner';
+import {BrowserProvider, ethers} from 'ethers';
+import {useWalletStore} from '@/store/wallet';
+import ERC20Token from '@/artifacts/contracts/ERC20Token.sol/ERC20Token.json';
+import {toast} from 'sonner';
 
 export type Token = {
   id: string
@@ -35,6 +39,39 @@ export default function Dashboard() {
   const page = Number(params.get("page") ?? 1);
   const perPage = Number(params.get("perPage") ?? 10);
   const [totalPages, setTotalPages] = useState(0);
+  const wallet = useWalletStore();
+
+  const addToWallet = (address: string) => (
+      async () => {
+        if(wallet.currentProvider?.provider) {
+          const browserProvider = new BrowserProvider(wallet.currentProvider.provider);
+          const signer = await browserProvider.getSigner(wallet.accounts[0]);
+          const contract = new ethers.Contract(address, ERC20Token.abi, signer);
+          const tokenDecimals = await contract.decimals();
+          const tokenSymbol = await contract.symbol();
+          const options = {
+            address: address,
+            symbol: tokenSymbol,
+            decimals: Number(tokenDecimals),
+          }
+          try {
+            const wasAdded = await wallet.currentProvider.provider.request({
+              method: "wallet_watchAsset",
+              params: {
+                type: 'ERC20', // For ERC-20 tokens
+                options,
+              },
+            })
+            wasAdded && toast("Token added successfully", {position: "top-right", classNames: {content: "text-green-500"}});
+          } catch (err) {
+            console.log(err);
+            toast("Failed while trying to add token to wallet", {position: "top-right", classNames: {content: "text-red-500"}});
+          }
+
+        }
+      }
+  );
+
   useEffect(() => {
     if (page > 0) {
       getTotalTokens().then(v => setTotalPages(Math.ceil(v / perPage))).catch(console.error);
@@ -76,6 +113,7 @@ export default function Dashboard() {
             <th className="text-left p-2">Kind</th>
             <th className="text-left p-2">Address</th>
             <th className="text-left p-2">Network</th>
+            <th className="text-left p-2"></th>
           </tr>
           </thead>
           <tbody>
@@ -86,7 +124,11 @@ export default function Dashboard() {
                   <td className="p-2">{type}</td>
                   <td className="p-2">{address}</td>
                   <td className="p-2">{network_name}</td>
-                  <td className="p-2"><Button asChild><Link href={`/dashboard/update-fungible-token/${id}`}><Pen/>Make changes</Link></Button></td>
+                  <td className="p-2 gap-2 flex">
+                    <Button asChild><Link href={`/dashboard/update-fungible-token/${id}`}><Pen/>Make
+                      changes</Link></Button>
+                    <Button onClick={addToWallet(address)}><Plus/>Add to wallet</Button>
+                  </td>
                 </tr>
             ))
           }
@@ -96,7 +138,8 @@ export default function Dashboard() {
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""} href={page - 1 === 0 ? '#' : `?page=${page - 1}`}/>
+                <PaginationPrevious className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""}
+                                    href={page - 1 === 0 ? '#' : `?page=${page - 1}`}/>
               </PaginationItem>
               {
                 Array.from({length: totalPages}).map((_, i) => (
@@ -108,7 +151,8 @@ export default function Dashboard() {
                 ))
               }
               <PaginationItem>
-                <PaginationNext className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""} href={page + 1 > data.length ? '#' : `?page=${page + 1}`}/>
+                <PaginationNext className={page - 1 === 0 ? "opacity-20 cursor-not-allowed" : ""}
+                                href={page + 1 > data.length ? '#' : `?page=${page + 1}`}/>
               </PaginationItem>
             </PaginationContent>
           </Pagination>
