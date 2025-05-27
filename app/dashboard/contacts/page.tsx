@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {Contact} from '@/lib/generated/prisma';
 import {fetchContacts} from '@/app/dashboard/contacts/actions';
 import Spinner from '@/components/spinner';
@@ -7,7 +7,6 @@ import {Button} from '@/components/ui/button';
 import Link from 'next/link';
 import {PlaneTakeoff} from 'lucide-react';
 import {useWalletStore} from '@/store/wallet';
-import {useSearchParams} from 'next/navigation';
 import ContactsList, {ContactsListRef} from '@/components/contacts-list';
 import {getContactTags} from '@/app/dashboard/airdrop/actions';
 
@@ -15,7 +14,10 @@ export default function Page() {
   const [data, setData] = useState<Contact[] | null>(null);
   const [tags, setTags] = useState<string[] | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
-  const searchParams = useSearchParams();
+  const searchParams = useMemo(() => {
+    if(typeof window === "undefined") return new URLSearchParams()
+    return new URLSearchParams(window?.location.href);
+  }, []);
   const [owner] = useWalletStore().accounts;
   const contactListRef = useRef<ContactsListRef>(null);
 
@@ -26,7 +28,7 @@ export default function Page() {
       getContactTags(owner).then(setTags).catch(console.error);
     }
 
-  }, [owner, contactListRef]);
+  }, [owner, contactListRef, searchParams]);
 
   const onCheckedChange = (id: string) => {
     return (checked: boolean) => {

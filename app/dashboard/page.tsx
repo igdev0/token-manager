@@ -1,11 +1,10 @@
 "use client";
 import {Button} from '@/components/ui/button';
 import {Pen, Plus} from 'lucide-react';
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {getTokens, getTotalTokens} from '@/app/dashboard/actions';
 import {$Enums} from '@/lib/generated/prisma';
 import Link from 'next/link';
-import {useSearchParams} from 'next/navigation';
 import {
   Pagination,
   PaginationContent,
@@ -32,18 +31,21 @@ export type Token = {
   created_at: Date
   updated_at: Date
 }
-const MAX_PAGERS = 10;
+
 export default function Dashboard() {
   const [data, setData] = useState<Token[] | null>(null);
-  const params = useSearchParams();
-  const page = Number(params.get("page") ?? 1);
-  const perPage = Number(params.get("perPage") ?? 10);
+  const searchParams  =  useMemo(() => {
+    if(typeof window === "undefined") return new URLSearchParams()
+    return new URLSearchParams(window.location.href);
+  }, []);
+  const page = Number(searchParams.get("page") ?? 1);
+  const perPage = Number(searchParams.get("perPage") ?? 10);
   const [totalPages, setTotalPages] = useState(0);
   const wallet = useWalletStore();
 
   const addToWallet = (address: string) => (
       async () => {
-        if(wallet.currentProvider?.provider) {
+        if (wallet.currentProvider?.provider) {
           const browserProvider = new BrowserProvider(wallet.currentProvider.provider);
           const signer = await browserProvider.getSigner(wallet.accounts[0]);
           const contract = new ethers.Contract(address, ERC20Token.abi, signer);
@@ -53,7 +55,7 @@ export default function Dashboard() {
             address: address,
             symbol: tokenSymbol,
             decimals: Number(tokenDecimals),
-          }
+          };
           try {
             const wasAdded = await wallet.currentProvider.provider.request({
               method: "wallet_watchAsset",
@@ -61,11 +63,18 @@ export default function Dashboard() {
                 type: 'ERC20', // For ERC-20 tokens
                 options,
               },
-            })
-            wasAdded && toast("Token added successfully", {position: "top-right", classNames: {content: "text-green-500"}});
+            });
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            wasAdded && toast("Token added successfully", {
+              position: "top-right",
+              classNames: {content: "text-green-500"}
+            });
           } catch (err) {
             console.log(err);
-            toast("Failed while trying to add token to wallet", {position: "top-right", classNames: {content: "text-red-500"}});
+            toast("Failed while trying to add token to wallet", {
+              position: "top-right",
+              classNames: {content: "text-red-500"}
+            });
           }
 
         }
