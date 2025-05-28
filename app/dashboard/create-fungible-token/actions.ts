@@ -1,10 +1,7 @@
 "use server";
-import {$Enums, PrismaClient} from '@/lib/generated/prisma';
+import {$Enums} from '@/lib/generated/prisma';
+import {prisma} from '@/lib/prisma';
 import TokenKind = $Enums.TokenKind;
-
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-});
 
 export async function storeToken(name: string, symbol: string, tokenAddress: string, type: TokenKind = "Fungible", network_name: string, chain_id: string, owner: string) {
   return prisma.token.create({
