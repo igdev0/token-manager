@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'node:path';
 // Source location of the query engine binary
 const sourcePath = path.resolve(
-    'node_modules/@prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node'
+    'node_modules/@prisma/engines/libquery_engine-rhel-openssl-3.0.x.so.node'
 );
 
 // Destination (adjust if needed)
