@@ -7,7 +7,7 @@ const sourcePath = path.resolve(
 );
 
 // Destination (adjust if needed)
-const destDir = path.resolve('/lib/generated/prisma');
+const destDir = path.resolve(`${process.cwd()}/lib/generated/prisma`);
 const destPath = path.join(destDir, 'libquery_engine-rhel-openssl-3.0.x.so.node');
 
 // Ensure the destination directory exists
