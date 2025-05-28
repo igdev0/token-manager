@@ -2,7 +2,10 @@ prisma/.next
 cache
 artifacts
 typechain-types
-lib/generated
+# Ignore everything in the directory
+#/lib/generated/prisma/*
+# But NOT this file (negate)
+#/lib/generated/prisma/libquery_engine-*
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
