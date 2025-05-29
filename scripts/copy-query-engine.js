@@ -5,7 +5,6 @@ import * as os from 'node:os';
 // Source location of the query engine binary
 let filename;
 
-console.log(os.platform());
 switch (os.platform()) {
     case "darwin":
         filename = "libquery_engine-darwin-arm64.dylib.node";
